@@ -3,6 +3,7 @@ import time
 import traceback
 import sys
 from datetime import datetime
+import os
 
 from rich.console import Console
 from rich.layout import Layout
@@ -230,12 +231,12 @@ if __name__ == "__main__":
                     ):
                         udemy.fetch_cookies()
                         login_method = "Browser Cookies"
-                elif udemy.settings["email"] and udemy.settings["password"]:
-                    email, password = (
-                        udemy.settings["email"],
-                        udemy.settings["password"],
-                    )
-                    login_method = "Saved Email and Password"
+                elif os.getenv('UDEMY_EMAIL') and os.getenv('UDEMY_PASSWORD'):
+                    email = os.getenv('UDEMY_EMAIL')
+                    password = os.getenv('UDEMY_PASSWORD')
+                    login_method = "Environment Variables"
+                    with console.status("[cyan]Logging in...[/cyan]"):
+                        udemy.manual_login(email, password)
                 else:
                     email = console.input("[cyan]Email: [/cyan]")
                     password = console.input("[cyan]Password: [/cyan]")
